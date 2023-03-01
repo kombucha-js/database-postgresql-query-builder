@@ -1,14 +1,21 @@
 {
-  "name": "database-query-builder",
+  "name": "database-postgresql-query-builder",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest "
+    "test": "node index.test.js"
+  },
+  "bin": {
+    "apupu-db-snipet": "bin/apupu-db-snipet.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "node-postgres": "^0.6.2",
     "pg": "^8.7.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3"
   }
 }

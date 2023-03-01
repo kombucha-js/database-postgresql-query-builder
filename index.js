@@ -2,10 +2,11 @@
 const { Client } = require('pg')
 
 class DatabaseQueryBuilderTable {
-  constructor(...args) {
-    this.columns = [];
-    this.primaryKeys = [];
-    this.foreignKeys = [];
+  constructor(table_name) {
+    this.table_name = table_name;
+    this.column_name_list = [];
+    this.primary_keys = [];
+    this.foreign_keys = [];
   }
 }
 class DatabaseQueryBuilderForeignKey {
@@ -21,12 +22,12 @@ class DatabaseQueryBuilder {
   constructor( tables ) {
     this.tables = tables;
   }
-  static async investigateTables( context ) {
+  static async investigateTables() {
     const tables = {};
     function get_table(table_name) {
       let table = tables[table_name];
       if ( ! table ) {
-        table = new DatabaseQueryBuilderTable();
+        table = new DatabaseQueryBuilderTable( table_name );
         tables[table_name] = table;
       }
       return table
@@ -38,7 +39,7 @@ class DatabaseQueryBuilder {
 
       {
         const result = await client.query( `
-          select table_name, column_name, ordinal_position 
+          select table_name, column_name, ordinal_position
           from information_schema.columns
           where table_schema = current_schema()
           order by table_name, ordinal_position;
@@ -52,7 +53,7 @@ class DatabaseQueryBuilder {
             ordinal_position,
           } = row;
           const table = get_table( table_name );
-          table.columns.push( column_name );
+          table.column_name_list.push( column_name );
         }
       }
 
@@ -74,7 +75,7 @@ class DatabaseQueryBuilder {
             column_name,
           } = row;
           const table = get_table( table_name );
-          table.primaryKeys.push( column_name );
+          table.primary_keys.push( column_name );
           // console.log( {table_name, column_name} );
         }
       }
@@ -82,26 +83,26 @@ class DatabaseQueryBuilder {
       {
         // https://stackoverflow.com/a/3907999/17858456
         const result = await client.query( `
-          SELECT 
-               kcu1.constraint_schema   AS fk_constraint_schema 
-              ,kcu1.constraint_name     AS fk_constraint_name 
-              ,kcu1.table_schema        AS fk_table_schema 
-              ,kcu1.table_name          AS fk_table_name 
-              ,kcu1.column_name         AS fk_column_name 
-              ,kcu1.ordinal_position    AS fk_ordinal_position 
-              ,kcu2.constraint_schema   AS referenced_constraint_schema 
-              ,kcu2.constraint_name     AS referenced_constraint_name 
-              ,kcu2.table_schema        AS referenced_table_schema 
-              ,kcu2.table_name          AS referenced_table_name 
-              ,kcu2.column_name         AS referenced_column_name 
-              ,kcu2.ordinal_position    AS referenced_ordinal_position 
+          SELECT
+               kcu1.constraint_schema   AS fk_constraint_schema
+              ,kcu1.constraint_name     AS fk_constraint_name
+              ,kcu1.table_schema        AS fk_table_schema
+              ,kcu1.table_name          AS fk_table_name
+              ,kcu1.column_name         AS fk_column_name
+              ,kcu1.ordinal_position    AS fk_ordinal_position
+              ,kcu2.constraint_schema   AS referenced_constraint_schema
+              ,kcu2.constraint_name     AS referenced_constraint_name
+              ,kcu2.table_schema        AS referenced_table_schema
+              ,kcu2.table_name          AS referenced_table_name
+              ,kcu2.column_name         AS referenced_column_name
+              ,kcu2.ordinal_position    AS referenced_ordinal_position
 
           FROM INFORMATION_SCHEMA.REFERENTIAL_CONSTRAINTS   AS rc
 
-          INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE    AS kcu1 
-               ON kcu1.constraint_catalog = rc.CONSTRAINT_CATALOG  
-              AND kcu1.constraint_schema  = rc.CONSTRAINT_SCHEMA 
-              AND kcu1.constraint_name    = rc.CONSTRAINT_NAME 
+          INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE    AS kcu1
+               ON kcu1.constraint_catalog = rc.CONSTRAINT_CATALOG
+              AND kcu1.constraint_schema  = rc.CONSTRAINT_SCHEMA
+              AND kcu1.constraint_name    = rc.CONSTRAINT_NAME
 
           INNER JOIN INFORMATION_SCHEMA.KEY_COLUMN_USAGE    AS kcu2
                ON kcu2.CONSTRAINT_CATALOG = rc.UNIQUE_CONSTRAINT_CATALOG
@@ -121,7 +122,7 @@ class DatabaseQueryBuilder {
             referenced_column_name,
           } = row;
           const table = get_table( table_name );
-          table.foreignKeys.push( 
+          table.foreign_keys.push(
             {
               table_name,
               column_name,
@@ -138,9 +139,6 @@ class DatabaseQueryBuilder {
       console.error(e);
     } finally {
       await client.end();
-      //if ( context.isConntected() ) {
-      //  await context.disconnect();
-      //}
     }
     return tables;
   }
