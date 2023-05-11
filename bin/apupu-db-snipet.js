@@ -115,7 +115,7 @@ KernelContext.defineMethod( async function read_${table.table_name}( nargs ) {
     WHERE ${condition}
   \`;
   const res = await this.query( SQL_TEXT(nargs), nargs );
-  return res.singleRow();
+  return res.singleRow;
 } , METHOD_POST, AUTO_CONNECTION );
 
 
@@ -126,7 +126,7 @@ KernelContext.defineMethod( async function delete_${table.table_name}( nargs ) {
     WHERE ${condition}
   \`;
   const res = await this.query( SQL_TEXT(nargs), nargs );
-  return res.singleRow();
+  return res.singleRow;
 } , METHOD_POST, AUTO_CONNECTION );
   `);
 }
