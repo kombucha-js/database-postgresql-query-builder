@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
 {
-  const fs = require('fs');
-  const path = require('path');
-  const dotenv_file = path.resolve(process.cwd(), '.env');
-  if ( ! fs.existsSync( dotenv_file ) ) {
-    throw new Error( `.env file (${ dotenv_file }) is missing.` );
-  }
+  // const fs = require('fs');
+  // const path = require('path');
+  // const dotenv_file = path.resolve(process.cwd(), '.env');
+  // if ( ! fs.existsSync( dotenv_file ) ) {
+  //   throw new Error( `.env file (${ dotenv_file }) is missing.` );
+  // }
   // require('dotenv').config();
   // MODIFIED (Wed, 27 Sep 2023 13:28:23 +0900)
   require('asynchronous-context/env').config();
