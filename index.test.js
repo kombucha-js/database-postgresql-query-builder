@@ -5,7 +5,9 @@
   if ( ! fs.existsSync( dotenv_file ) ) {
     throw new Error( `.env file (${ dotenv_file }) is missing.` );
   }
-  require('dotenv').config();
+  // require('dotenv').config();
+  // MODIFIED (Wed, 27 Sep 2023 13:28:23 +0900)
+  require('asynchronous-context/env').config();
 }
 
 Object.assign( require('util').inspect.defaultOptions, {
