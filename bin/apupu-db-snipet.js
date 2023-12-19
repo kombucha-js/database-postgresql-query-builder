@@ -102,7 +102,7 @@ function create_crud( table ) {
 
 
   return (`
-KernelContext.defineMethod( async function create_or_update_${table.table_name}(nargs){
+CoreContext.defineMethod( async function create_or_update_${table.table_name}(nargs){
   const SQL_TEXT = sqlmacro\`
 ${output.map(e=>'    '+e).join('\n')}
   \`;
@@ -110,7 +110,7 @@ ${output.map(e=>'    '+e).join('\n')}
   return res.rows;
 } , METHOD_POST, AUTO_CONNECTION );
 
-KernelContext.defineMethod( async function read_${table.table_name}( nargs ) {
+CoreContext.defineMethod( async function read_${table.table_name}( nargs ) {
   const SQL_TEXT = sqlmacro\`
     #params:nargs
     SELECT * FROM ${table.table_name}
@@ -121,7 +121,7 @@ KernelContext.defineMethod( async function read_${table.table_name}( nargs ) {
 } , METHOD_POST, AUTO_CONNECTION );
 
 
-KernelContext.defineMethod( async function delete_${table.table_name}( nargs ) {
+CoreContext.defineMethod( async function delete_${table.table_name}( nargs ) {
   const SQL_TEXT = sqlmacro\`
     #params:nargs
     DELETE FROM ${table.table_name}
