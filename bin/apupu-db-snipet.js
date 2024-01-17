@@ -108,7 +108,7 @@ ${output.map(e=>'    '+e).join('\n')}
   \`;
   const res = await this.query( SQL_TEXT(nargs), nargs );
   return res.rows;
-} , METHOD_POST, AUTO_CONNECTION );
+} , METHOD_POST, AUTO_COMMIT );
 
 CoreContext.defineMethod( async function read_${table.table_name}( nargs ) {
   const SQL_TEXT = sqlmacro\`
@@ -118,7 +118,7 @@ CoreContext.defineMethod( async function read_${table.table_name}( nargs ) {
   \`;
   const res = await this.query( SQL_TEXT(nargs), nargs );
   return res.singleRow;
-} , METHOD_POST, AUTO_CONNECTION );
+} , METHOD_POST, AUTO_COMMIT );
 
 
 CoreContext.defineMethod( async function delete_${table.table_name}( nargs ) {
@@ -129,7 +129,7 @@ CoreContext.defineMethod( async function delete_${table.table_name}( nargs ) {
   \`;
   const res = await this.query( SQL_TEXT(nargs), nargs );
   return res.singleRow;
-} , METHOD_POST, AUTO_CONNECTION );
+} , METHOD_POST, AUTO_COMMIT );
   `);
 }
 
